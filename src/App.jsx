@@ -1,26 +1,31 @@
-// import logo from './logo.svg';
 import './App.css';
 import Home from './pages/Home';
-import {BrowserRouter as Router,Routes,Route, Navigate} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from './pages/login';
 import Register from './pages/Register';
+import { useState, useEffect } from 'react';
 
 function App() {
-  const user=false;
+  const [user, setUser] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem("user"); 
+    setUser(false);
+  }, []);
+
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //        save to reload.
-    //     </p>
-    //   </header>
-    // </div>
     <Router>
       <Routes>
-        <Route path="/" element={user?<Navigate to="/"/>:<Home/>}/>
-        <Route path="/login" element={user?<Navigate to="/"/>:<Login/>}/>
-        <Route path="/register" element={user?<Navigate to="/"/>:<Register/>}/>
+        <Route path="/" element={<Navigate to="/register" />} />
+        <Route path="/register" element={<Register />} />
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to="/home" /> : <Login setUser={setUser} />} 
+        />       
+        <Route 
+          path="/home" 
+          element={user ? <Home /> : <Navigate to="/login" />} 
+        />
       </Routes>
     </Router>
   );
