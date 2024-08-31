@@ -55,14 +55,13 @@
 
 // export default Login
 
-import styled from "styled-components";
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   width: 100vw;
-  height: 70vh;
   background-size: cover;
   display: flex;
   align-items: center;
@@ -71,6 +70,7 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   width: 40%;
+  margin-top: 10px;
   padding: 20px;
   background-color: #ffffff8e;
 `;
@@ -105,17 +105,14 @@ const Form = styled.form`
 `;
 
 const Input = styled.input`
-  color: rgb(25, 24, 24);
-  font-size: 16px;
-  font-family: Noto Sans;
   flex: 1;
+  min-width: 40%;
+  margin: 20px 10px 0px 0px;
   padding: 10px;
-  width: 38vw; 
 `;
 
-
 const InputButton = styled.input`
-  font-size:22px;
+  font-size: 22px;
   width: 100%;
   font-family: 'Poppins';
   border: none;
@@ -128,119 +125,74 @@ const InputButton = styled.input`
   cursor: pointer;
 `;
 
-const Label = styled.label`
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  font-variant: normal;
-  font-family: 'Poppins', sans-serif;
-  color: rgb(102, 102, 102);
-  background-color: rgba(0, 0, 0, 0);
-  text-align: left;
-  text-indent: 0px;
-  line-height: normal;
-  text-decoration: none solid rgb(102, 102, 102);
-`;
-const Labelbox = styled.label`
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  font-variant: normal;
-  font-family: 'Poppins';
-  text-align: left;
-  text-indent: 0px;
-  line-height: normal;
-`;
-const InputBox = styled.input`
-  width: 15px;
-  height: 15px;
-  cursor: pointer;
-  margin-right: 10px;
-`;
-
-const DivIn = styled.div`
-  margin-top: 32px;
-`;
-
 const linkStyle = {
-  marginTop: '10px',
-  marginLeft: '390px',
-  textDecoration: 'underline', 
+  textDecoration: 'underline',
   color: 'inherit',
-  fontSize: '16px',      
-  fontFamily: 'Poppins'    
-};
-const linkStyle2 = {
-  textDecoration: 'underline', 
-  color: 'inherit'   
 };
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const navigate = useNavigate();
-
-  const [user,setUser]=useState({
-    email:"",
-    password:"",
+  const [user, setUserState] = useState({
+    email: "",
+    password: "",
   });
-  
-  async function loginUser(event) {
-    event.preventDefault()
-		const response = await fetch('http://localhost:8080/api/users/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(user),
-		});
-    console.log(response);  
-		const data = await response.json()
-    console.log(data);
 
-		if(response.ok){
-      setUser({email:"", password:""});
-      navigate("/");
-      alert("Login Successful!!")
-    }
-    else {
-      
+  async function loginUser(event) {
+    event.preventDefault();
+    const response = await fetch('http://localhost:8080/api/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setUser(true);
+      navigate("/home");
+      alert("Login Successful!!");
+    } else {
       navigate("/login");
       alert("Invalid username or password. Please try again.");
-      setUser({ email: "", password: "" });
+      setUserState({ email: "", password: "" });
     }
-	}
+  }
 
-  const handleInput = (e) =>{
-    let name=e.target.name;
-    let value= e.target.value;
-    console.log(e);
-
-    setUser({
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    setUserState({
       ...user,
-      [name]:value,
+      [name]: value,
     });
   };
 
   return (
-    <div>
-      <Container>
+    <Container>
       <Wrapper>
-        <Title>Log in</Title>
-        <SubTitle>Don't have an account?<Link to="/Signup" style={linkStyle2}>Sign up</Link></SubTitle>
+        <Title>Login</Title>
+        <SubTitle>Don't have an account?<Link to="/register" style={linkStyle}>Sign up</Link></SubTitle>
         <Form onSubmit={loginUser}>
-          <DivIn>
-          <Label>Email address or Username</Label>
-          <Input value={user.email} onChange={handleInput} type="text" name="email"/>
-          </DivIn>
-          <DivIn>
-          <Label>Password</Label>
-          <Input value={user.password} onChange={handleInput} type="password" name="password"/>
-          </DivIn>
-            <InputButton type="submit" value="Log in" />
+          <Input
+            type="text"
+            name="email"
+            placeholder="Email"
+            value={user.email}
+            onChange={handleInput}
+          />
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={user.password}
+            onChange={handleInput}
+          />
+          <InputButton type="submit" value="Log in" />
         </Form>
       </Wrapper>
     </Container>
-    </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
