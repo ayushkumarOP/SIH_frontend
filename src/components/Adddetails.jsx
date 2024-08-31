@@ -1,5 +1,9 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
+import InvoicePreview from './InvoicePreview';
+import { useReactToPrint } from 'react-to-print';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const PageWrapper = styled.div`
   position: absolute;
@@ -117,7 +121,20 @@ const DeleteButton = styled.button`
   margin-left: 10px;
 `;
 
+const DownloadButton = styled.button`
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+`;
+
 const Adddetails = () => {
+  const [sender, setSender] = useState("");
+  const [slogan, setSlogan] = useState("");
   const [address, setAddress] = useState("");
   const [city, setcity] = useState("");
   const [state, setstate] = useState("");
@@ -136,6 +153,23 @@ const Adddetails = () => {
   const [items, setItems] = useState([
     { item: "", description: "", amount: "", cost: "" },
   ]);
+  const [currentInvoiceNumber, setCurrentInvoiceNumber] = useState('');
+  const handleInvoiceNumberGenerated = (number) => {
+    setCurrentInvoiceNumber(number);
+  };
+  const handleDownload = async () => {
+    const element = invoiceRef.current;
+    const canvas = await html2canvas(element);
+    const data = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF();
+    const imgProperties = pdf.getImageProperties(data);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+
+    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`invoice #${currentInvoiceNumber}.pdf`);
+  };
   const itemsEndRef = useRef(null);
 
   const handleItemChange = (index, field, value) => {
@@ -161,6 +195,12 @@ const Adddetails = () => {
   });
   };
 
+  const invoiceRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => invoiceRef.current,
+  });
+
   return (
     <PageWrapper>
       <Wrapper>
@@ -171,6 +211,33 @@ const Adddetails = () => {
             <SectionTitle>BILLED FROM:</SectionTitle>
             <Container2>
               <LabelContainer>
+                <Title>Company Name</Title>
+              </LabelContainer>
+              <InputContainer>
+                <InputField
+                  type="text"
+                  placeholder="Enter Company Name"
+                  value={sender}
+                  onChange={(e) => setSender(e.target.value)}
+                  required
+                />
+              </InputContainer>
+            </Container2>
+            <Container2>
+              <LabelContainer>
+                <Title>Company Slogan</Title>
+              </LabelContainer>
+              <InputContainer>
+                <InputField
+                  type="text"
+                  placeholder="Enter Slogan (optional)"
+                  value={slogan}
+                  onChange={(e) => setSlogan(e.target.value)}
+                />
+              </InputContainer>
+            </Container2>
+            <Container2>
+              <LabelContainer>
                 <Title>Street Address</Title>
               </LabelContainer>
               <InputContainer>
@@ -179,7 +246,7 @@ const Adddetails = () => {
                   placeholder="Enter Street Address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  required
+                  required      
                 />
               </InputContainer>
             </Container2>
@@ -402,6 +469,37 @@ const Adddetails = () => {
         <AddItemButton onClick={handleAddItem}>Add Item</AddItemButton>
       </ItemContainer>
       </Container>
+      </Wrapper>
+      <Wrapper>
+        <Container>
+          <SectionTitle>Invoice Preview</SectionTitle>
+          <div ref={invoiceRef}>
+          <InvoicePreview
+            billedFrom={{
+              sender,
+              slogan,
+              address,
+              city,
+              state,
+              zip,
+              phone,
+              email,
+            }}
+            billTo={{
+              name,
+              companyName: companyname,
+              address: address2,
+              city: city2,
+              state: state2,
+              zip: zip2,
+              phone: phone2,
+            }}
+            items={items}
+            onInvoiceNumberGenerated={handleInvoiceNumberGenerated}
+          />
+          </div>
+          <DownloadButton onClick={handleDownload}>Download Invoice</DownloadButton>
+        </Container>
       </Wrapper>
     </PageWrapper>
   );

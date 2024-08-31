@@ -13,10 +13,13 @@
     "@tinymce/tinymce-react": "^5.1.1",
     "antd": "^5.20.3",
     "axios": "^1.7.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
+    "react-to-print": "^2.15.1",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"
