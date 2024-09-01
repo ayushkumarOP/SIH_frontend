@@ -4,6 +4,7 @@ import InvoicePreview from './InvoicePreview';
 import { useReactToPrint } from 'react-to-print';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import axios from "axios";
 
 const PageWrapper = styled.div`
   position: absolute;
@@ -170,6 +171,43 @@ const Adddetails = () => {
     pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`invoice #${currentInvoiceNumber}.pdf`);
   };
+  
+  const handleConfirm = async () => {
+    const invoiceData = {
+      billedFrom: {
+        sender,
+        slogan,
+        address,
+        city,
+        state,
+        zip,
+        phone,
+        email,
+      },
+      billTo: {
+        name,
+        companyName: companyname,
+        address: address2,
+        city: city2,
+        state: state2,
+        zip: zip2,
+        phone: phone2,
+      },
+      items,
+      invoiceNumber: currentInvoiceNumber, // Ensure this is set properly
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/invoice/add', invoiceData);
+      alert('Invoice saved successfully!');
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error saving invoice:', error);
+      alert('There was an error saving the invoice. Please try again.');
+    }
+  };
+
+
   const itemsEndRef = useRef(null);
 
   const handleItemChange = (index, field, value) => {
@@ -499,6 +537,7 @@ const Adddetails = () => {
           />
           </div>
           <DownloadButton onClick={handleDownload}>Download Invoice</DownloadButton>
+          <DownloadButton onClick={handleConfirm}>Confirm and Save Invoice</DownloadButton>
         </Container>
       </Wrapper>
     </PageWrapper>

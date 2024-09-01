@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from './pages/login';
 import Register from './pages/Register';
 import { useState, useEffect } from 'react';
+import History from './pages/History';
 
 function App() {
   const [user, setUser] = useState(false);
@@ -26,6 +27,10 @@ function App() {
           path="/home" 
           element={user ? <Home /> : <Navigate to="/login" />} 
         />
+        <Route 
+          path="/history" 
+          element={user ? <Navigate to="/home" /> : <History setUser={setUser} />} 
+        />  
       </Routes>
     </Router>
   );
