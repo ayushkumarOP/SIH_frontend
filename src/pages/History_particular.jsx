@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import styled from 'styled-components';
-
+import Header from '../components/Header';
 const Container = styled.div`
   padding: 20px;
   max-width: 1200px;
@@ -14,8 +14,9 @@ const Container = styled.div`
 
 const ParticularHistory = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Use navigate instead of history in React Router v6
   const userEmail = location.state?.userEmail || "";
-  console.log(userEmail);
+  const userName = location.state?.userName||"";
   const [rowData, setRowData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,6 +30,11 @@ const ParticularHistory = () => {
   ];
 
   useEffect(() => {
+    if (!userEmail) {
+      navigate('/');
+      return;
+    }
+
     const fetchInvoices = async () => {
       try {
         setLoading(true);
@@ -43,19 +49,15 @@ const ParticularHistory = () => {
       }
     };
 
-    if (userEmail) {
-      fetchInvoices();
-    } else {
-      setError("No user email provided.");
-      setLoading(false);
-    }
-  }, [userEmail]);
+    fetchInvoices();
+  }, [userEmail, navigate]);
 
   if (loading) return <Container>Loading...</Container>;
   if (error) return <Container>Error: {error}</Container>;
 
   return (
     <Container>
+      <Header/>
       <h2>Invoice History for {userEmail}</h2>
       <div className="ag-theme-alpine" style={{ height: 500, width: '100%' }}>
         <AgGridReact
