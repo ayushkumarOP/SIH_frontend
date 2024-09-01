@@ -181,11 +181,6 @@ const Adddetails = () => {
     pdf.save(`invoice #${currentInvoiceNumber}.pdf`);
   };
   
-  const handleViewHistory = () => {
-    console.log({userEmail});
-    navigate('/particular_history', { state: { userEmail } });
-  };
-  
   const handleConfirm = async () => {
     const invoiceData = {
       billedFrom: {
