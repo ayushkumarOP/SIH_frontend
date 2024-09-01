@@ -110,28 +110,35 @@ const Login = ({ setUser }) => {
     password: "",
   });
 
-  async function loginUser(event) {
+  const loginUser = async (event) => {
     event.preventDefault();
-    const response = await fetch('http://localhost:8080/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-    });
+    try {
+      const response = await fetch('http://localhost:8080/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      setUser(true);
-      navigate("/home");
-      alert("Login Successful!!");
-    } else {
-      navigate("/login");
-      alert("Invalid username or password. Please try again.");
-      setUserState({ email: "", password: "" });
+      if (response.ok) {
+        console.log(`User ${data.name} logged in successfully having email ${data.email}`);
+        
+        setUser(true);
+        navigate("/home", { state: { userName: data.name ,userEmail: data.email} }); // Pass the user's name here
+        alert("Login Successful!!");
+      } else {
+        navigate("/login");
+        alert("Invalid username or password. Please try again.");
+        setUserState({ email: "", password: "" });
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Something went wrong.");
     }
-  }
+  };
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -145,14 +152,18 @@ const Login = ({ setUser }) => {
     <Container>
       <Wrapper>
         <Title>Login</Title>
-        <SubTitle>Don't have an account? <StyledLink to="/register">Sign up</StyledLink></SubTitle>
+        <SubTitle>
+          Don't have an account?
+          <Link to="/register" style={linkStyle}>Sign up</Link>
+        </SubTitle>
         <Form onSubmit={loginUser}>
           <Input
-            type="text"
+            type="email"
             name="email"
             placeholder="Email"
             value={user.email}
             onChange={handleInput}
+            required
           />
           <Input
             type="password"
@@ -160,12 +171,14 @@ const Login = ({ setUser }) => {
             placeholder="Password"
             value={user.password}
             onChange={handleInput}
+            required
           />
-          <InputButton type="submit">Log in</InputButton>
+          <InputButton type="submit" value="Log in" />
         </Form>
       </Wrapper>
     </Container>
   );
 };
+ 
 
 export default Login;
