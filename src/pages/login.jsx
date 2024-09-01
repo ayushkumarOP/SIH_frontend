@@ -56,6 +56,15 @@ const SubTitle = styled.p`
   text-align: center;
   font-size: 14px;
   font-weight: 400;
+
+  a {
+    text-decoration: underline;
+    color: #2575fc;
+    font-weight: 500;
+    &:hover {
+      color: #1a5bb8;
+    }
+  }
 `;
 
 const Form = styled.form`
@@ -153,8 +162,7 @@ const Login = ({ setUser }) => {
       <Wrapper>
         <Title>Login</Title>
         <SubTitle>
-          Don't have an account?
-          <Link to="/register" style={linkStyle}>Sign up</Link>
+            Don't have an account? <StyledLink to="/register">Sign up</StyledLink>
         </SubTitle>
         <Form onSubmit={loginUser}>
           <Input
