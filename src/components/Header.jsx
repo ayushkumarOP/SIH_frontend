@@ -68,16 +68,29 @@ const Header = () => {
     };
 
     const handleViewHistory = () => {
-        console.log({userEmail});
-        navigate('/particular_history', { state: { userEmail } });
+        navigate('/particular_history', { state: { userEmail ,userName} });
     };
+
+    const handleGenerateInvoice = () => {
+        navigate('/home', { state: { userEmail ,userName} });
+    };
+    const isInvoiceHistoryPage = location.pathname === '/particular_history';
 
     return (
         <Component>
             <Container>
                 <LinksContainer>
-                    <Button onClick={handleViewHistory}>INVOICE HISTORY</Button>
-                    <Button onClick={logout}>LOGOUT</Button>
+                {isInvoiceHistoryPage ? (
+                        <Button onClick={handleGenerateInvoice}>GENERATE INVOICE</Button>
+                    ) : (
+                        <Button onClick={handleViewHistory}>INVOICE HISTORY</Button>
+                    )}
+                    {isInvoiceHistoryPage ? (
+                        ""
+                    ) : (
+                        <Button onClick={logout}>LOGOUT</Button>
+                    )}
+                    
                 </LinksContainer>
                 <AccountContainer>
                     <StyledAvatar>{getInitials(userName)}</StyledAvatar>
