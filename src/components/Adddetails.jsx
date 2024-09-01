@@ -5,9 +5,12 @@ import { useReactToPrint } from 'react-to-print';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import axios from "axios";
+import { useLocation, useNavigate } from 'react-router-dom';
+
 
 const PageWrapper = styled.div`
   position: absolute;
+  margin-top:38px;
   top: 0;
   left: 0;
   right: 0;
@@ -134,7 +137,13 @@ const DownloadButton = styled.button`
 `;
 
 const Adddetails = () => {
-  const [sender, setSender] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const userName = location.state?.userName || "";
+  const userEmail = location.state?.userEmail || "";
+
+  const [sender, setSender] = useState(userName);
   const [slogan, setSlogan] = useState("");
   const [address, setAddress] = useState("");
   const [city, setcity] = useState("");
@@ -172,6 +181,11 @@ const Adddetails = () => {
     pdf.save(`invoice #${currentInvoiceNumber}.pdf`);
   };
   
+  const handleViewHistory = () => {
+    console.log({userEmail});
+    navigate('/particular_history', { state: { userEmail } });
+  };
+  
   const handleConfirm = async () => {
     const invoiceData = {
       billedFrom: {
@@ -195,6 +209,7 @@ const Adddetails = () => {
       },
       items,
       invoiceNumber: currentInvoiceNumber, // Ensure this is set properly
+      email: userEmail,
     };
 
     try {
@@ -244,6 +259,7 @@ const Adddetails = () => {
       <Wrapper>
       <Container>
         <SectionTitle>INVOICE</SectionTitle>
+        <SectionTitle>{userEmail} <br></br> {userName}</SectionTitle>
         <SectionContainer>
           <Section>
             <SectionTitle>BILLED FROM:</SectionTitle>
@@ -538,6 +554,7 @@ const Adddetails = () => {
           </div>
           <DownloadButton onClick={handleDownload}>Download Invoice</DownloadButton>
           <DownloadButton onClick={handleConfirm}>Confirm and Save Invoice</DownloadButton>
+          <DownloadButton onClick={handleViewHistory}>View Invoice History</DownloadButton>
         </Container>
       </Wrapper>
     </PageWrapper>
