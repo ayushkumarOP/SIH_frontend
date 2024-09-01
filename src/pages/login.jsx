@@ -87,14 +87,14 @@ const Input = styled.input`
   }
 `;
 
-const InputButton = styled.button`
+const InputButton = styled.input`
   font-size: 18px;
+  padding: 15px 0;
   font-family: 'Poppins', sans-serif;
   border: none;
-  padding: 15px;
   background-color: #2575fc;
-  border-radius: 8px;
   color: white;
+  border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
