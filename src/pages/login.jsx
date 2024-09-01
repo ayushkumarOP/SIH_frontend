@@ -1,60 +1,3 @@
-// import React, { useState, useEffect } from 'react'
-// import { Form, Input, message } from "antd";  
-// import { Link,useNavigate } from 'react-router-dom';
-// import axios from 'axios';
-// import Spinner from '../components/Spinner';
-
-// const Login = () => {
-//     const navigate = useNavigate();
-//     const [loading, setLoading] = useState(false);
-
-//     // form submit
-//     const submitHandler = async (values) => {
-//         try {
-//             setLoading(true);
-//             const {data} = await axios.post('users/login',values)
-//             setLoading(false);
-//             message.success("Login Success");
-//             localStorage.setItem('user',JSON.stringify({...data.user,password:''}))   //not storing password in local storage
-//             navigate('/');
-//         } catch (error) {
-//             setLoading(false);
-//             message.error('something went wrong');
-//         }
-//     };
-
-//     //prevent for logged in user
-//     useEffect(() => {
-//         if(localStorage.getItem("user")){
-//             navigate('/')
-//         }
-//     }, [navigate]);
-
-//     return (
-//         <div className='register-page-container'>
-//             <h1>Invoice App</h1>
-//             <div className="register-page">
-//                 { loading && <Spinner /> }
-//                 <Form layout="vertical" onFinish={submitHandler}>
-//                     <h1>Login</h1>
-//                     <Form.Item label="Email" name="email" rules={[{required: true, message: 'Please input your email!'}]}>
-//                         <Input type="email" />
-//                     </Form.Item>
-//                     <Form.Item label="Password" name="password" rules={[{required: true, message: 'Please input your password!'}]}>
-//                         <Input type="password" />
-//                     </Form.Item>
-//                     <div className="d-flex justify-content-between">
-//                         <Link to="/register">Not a user? Click here to register</Link>
-//                         <button className="btn btn-primary" type="submit" style={{margin:'5px'}}>Login</button>
-//                     </div>
-//                 </Form>
-//             </div>
-//         </div>        
-//     )
-// }
-
-// export default Login
-
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -137,28 +80,35 @@ const Login = ({ setUser }) => {
     password: "",
   });
 
-  async function loginUser(event) {
+  const loginUser = async (event) => {
     event.preventDefault();
-    const response = await fetch('http://localhost:8080/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-    });
+    try {
+      const response = await fetch('http://localhost:8080/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      setUser(true);
-      navigate("/home");
-      alert("Login Successful!!");
-    } else {
-      navigate("/login");
-      alert("Invalid username or password. Please try again.");
-      setUserState({ email: "", password: "" });
+      if (response.ok) {
+        console.log(`User ${data.name} logged in successfully`);
+
+        setUser(true);
+        navigate("/home");
+        alert("Login Successful!!");
+      } else {
+        navigate("/login");
+        alert("Invalid username or password. Please try again.");
+        setUserState({ email: "", password: "" });
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Something went wrong.");
     }
-  }
+  };
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -172,14 +122,18 @@ const Login = ({ setUser }) => {
     <Container>
       <Wrapper>
         <Title>Login</Title>
-        <SubTitle>Don't have an account?<Link to="/register" style={linkStyle}>Sign up</Link></SubTitle>
+        <SubTitle>
+          Don't have an account?
+          <Link to="/register" style={linkStyle}>Sign up</Link>
+        </SubTitle>
         <Form onSubmit={loginUser}>
           <Input
-            type="text"
+            type="email"
             name="email"
             placeholder="Email"
             value={user.email}
             onChange={handleInput}
+            required
           />
           <Input
             type="password"
@@ -187,6 +141,7 @@ const Login = ({ setUser }) => {
             placeholder="Password"
             value={user.password}
             onChange={handleInput}
+            required
           />
           <InputButton type="submit" value="Log in" />
         </Form>
