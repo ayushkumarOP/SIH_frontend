@@ -1,153 +1,175 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
+import backgroundImage from '../assets/background.jpg';
+
 
 const Container = styled.div`
   width: 100vw;
-  background-size: cover;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url(${backgroundImage}) no-repeat center center;
+    background-size: cover; /* Ensure the image covers the viewport */
+    opacity: 0.75; /* Adjust opacity for transparency effect */
+    z-index: -1;
+  }
 `;
+
 
 const Wrapper = styled.div`
-  width: 40%;
-  margin-top: 10px;
-  padding: 20px;
-  background-color: #ffffff8e;
+  width: 90%;
+  max-width: 400px;
+  padding: 40px 30px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 15px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 `;
 
-const Title = styled.p`
-  margin: 0;
-  font-family: Poppins;
-  font-style: normal;
+
+const Title = styled.h1`
+  margin-bottom: 20px;
+  font-family: 'Poppins', sans-serif;
   color: rgb(51, 51, 51);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 33px; 
-  font-weight: 500;
+  text-align: center;
+  font-size: 2rem; 
+  font-weight: 600;
 `;
+
 
 const Form = styled.form`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
 `;
+
 
 const Input = styled.input`
-  flex: 1;
-  min-width: 40%;
-  margin: 20px 10px 0px 0px;
-  padding: 10px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #679bff;
+    outline: none;
+  }
 `;
 
-const Agreement = styled.span`
-  font-size: 12px;
-  margin: 20px 0px;
-`;
 
 const SubTitle = styled.p`
-  margin: 0 0 32px 0;
-  font-family: Poppins;
-  font-style: normal;
+  font-family: 'Poppins', sans-serif;
   color: rgb(51, 51, 51);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+  text-align: center;
+  font-size: 14px;
   font-weight: 400;
+  margin-bottom: 30px;
 `;
 
 const linkStyle = {
   textDecoration: 'underline', 
-  color: 'inherit'
+  color: '#679bff',
 };
 
-const InputBox = styled.input`
-  width: 15px;
-  height: 15px;
-  cursor: pointer;
-  margin-right: 10px;
-`;
-
-const PrivacyPolicy = styled.b`
-  margin-left: 37px;
-`;
 
 const InputButton = styled.input`
-  font-size:22px;
-  width: 100%;
-  font-family: 'Poppins';
+  font-size: 18px;
+  padding: 15px 0;
+  font-family: 'Poppins', sans-serif;
   border: none;
-  margin-top: 50px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: #c0c0be;
-  border-radius: 40px;
+  background-color: #2575fc;
   color: white;
+  border-radius: 30px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #1a5bb8;
+  }
 `;
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const [user,setUser]=useState({
-    name:"",
-    email:"",
-    password:"",
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
   });
 
-	async function registerUser(event) {
-    event.preventDefault()
-      const response = await fetch('http://localhost:8080/api/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      });
-  
-      if(response.ok){
-        setUser({name:"", email:"", password:""});
-        navigate("/login");
-      }
-	}
-  
-  const handleInput = (e) =>{
-    let name=e.target.name;
-    let value= e.target.value;
-    console.log(e);
+  async function registerUser(event) {
+    event.preventDefault();
+    const response = await fetch('http://localhost:8080/api/users/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (response.ok) {
+      setUser({ name: "", email: "", password: "" });
+      navigate("/login");
+    }
+  }
+
+  const handleInput = (e) => {
+    let name = e.target.name;
+    let value = e.target.value;
 
     setUser({
       ...user,
-      [name]:value,
+      [name]: value,
     });
   };
 
-  
-
   return (
-    <div>
-      <Container>
+    <Container>
       <Wrapper>
-        <Title>Sign up</Title>
-        
-        <SubTitle>Already have an account?<Link to="/Login" style={linkStyle}>Log in</Link></SubTitle>
+        <Title>Sign Up</Title>
+        <SubTitle>Already have an account? <Link to="/login" style={linkStyle}>Log in</Link></SubTitle>
         <Form onSubmit={registerUser}>
-          <Input value={user.name} onChange={handleInput} name="name" type="text" placeholder="name" />
-          <Input value={user.email} onChange={handleInput } name="email" type="email" placeholder="email" />
-          <Input value={user.password} onChange={handleInput} name="password" type="password" placeholder="password" />
-          
-          <InputButton
-              type="submit"
-              value="Create Account"
-            />
+          <Input
+            value={user.name}
+            onChange={handleInput}
+            name="name"
+            type="text"
+            placeholder="Name"
+            required
+          />
+          <Input
+            value={user.email}
+            onChange={handleInput}
+            name="email"
+            type="email"
+            placeholder="Email"
+            required
+          />
+          <Input
+            value={user.password}
+            onChange={handleInput}
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+          />
+          <InputButton type="submit" value="Create Account" />
         </Form>
       </Wrapper>
     </Container>
-    </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

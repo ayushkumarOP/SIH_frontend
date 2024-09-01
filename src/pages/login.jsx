@@ -1,134 +1,105 @@
-// import React, { useState, useEffect } from 'react'
-// import { Form, Input, message } from "antd";  
-// import { Link,useNavigate } from 'react-router-dom';
-// import axios from 'axios';
-// import Spinner from '../components/Spinner';
-
-// const Login = () => {
-//     const navigate = useNavigate();
-//     const [loading, setLoading] = useState(false);
-
-//     // form submit
-//     const submitHandler = async (values) => {
-//         try {
-//             setLoading(true);
-//             const {data} = await axios.post('users/login',values)
-//             setLoading(false);
-//             message.success("Login Success");
-//             localStorage.setItem('user',JSON.stringify({...data.user,password:''}))   //not storing password in local storage
-//             navigate('/');
-//         } catch (error) {
-//             setLoading(false);
-//             message.error('something went wrong');
-//         }
-//     };
-
-//     //prevent for logged in user
-//     useEffect(() => {
-//         if(localStorage.getItem("user")){
-//             navigate('/')
-//         }
-//     }, [navigate]);
-
-//     return (
-//         <div className='register-page-container'>
-//             <h1>Invoice App</h1>
-//             <div className="register-page">
-//                 { loading && <Spinner /> }
-//                 <Form layout="vertical" onFinish={submitHandler}>
-//                     <h1>Login</h1>
-//                     <Form.Item label="Email" name="email" rules={[{required: true, message: 'Please input your email!'}]}>
-//                         <Input type="email" />
-//                     </Form.Item>
-//                     <Form.Item label="Password" name="password" rules={[{required: true, message: 'Please input your password!'}]}>
-//                         <Input type="password" />
-//                     </Form.Item>
-//                     <div className="d-flex justify-content-between">
-//                         <Link to="/register">Not a user? Click here to register</Link>
-//                         <button className="btn btn-primary" type="submit" style={{margin:'5px'}}>Login</button>
-//                     </div>
-//                 </Form>
-//             </div>
-//         </div>        
-//     )
-// }
-
-// export default Login
-
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import backgroundImage from '../assets/background.jpg';
 
 const Container = styled.div`
   width: 100vw;
-  background-size: cover;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url(${backgroundImage}) no-repeat center center;
+    background-size: cover; /* Ensure the image covers the viewport */
+    opacity: 0.75; /* Adjust opacity for transparency effect */
+    z-index: -1;
+  }
 `;
+
 
 const Wrapper = styled.div`
-  width: 40%;
-  margin-top: 10px;
-  padding: 20px;
-  background-color: #ffffff8e;
+  width: 90%;
+  max-width: 400px;
+  padding: 40px 30px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 15px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 `;
 
-const Title = styled.p`
+const Title = styled.h1`
   margin: 0;
-  font-family: Poppins;
-  font-style: normal;
-  color: rgb(51, 51, 51);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 33px; 
-  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
 `;
 
 const SubTitle = styled.p`
-  margin: 0 0 32px 0;
-  font-family: Poppins;
-  font-style: normal;
-  color: rgb(51, 51, 51);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-family: 'Poppins', sans-serif;
+  color: #555;
+  text-align: center;
+  font-size: 14px;
   font-weight: 400;
 `;
 
 const Form = styled.form`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
 `;
 
 const Input = styled.input`
-  flex: 1;
-  min-width: 40%;
-  margin: 20px 10px 0px 0px;
-  padding: 10px;
+  margin-bottom: 15px;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+
+  &:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 8px rgba(37, 117, 252, 0.2);
+  }
 `;
 
-const InputButton = styled.input`
-  font-size: 22px;
-  width: 100%;
-  font-family: 'Poppins';
+const InputButton = styled.button`
+  font-size: 18px;
+  font-family: 'Poppins', sans-serif;
   border: none;
-  margin-top: 50px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: #c0c0be;
-  border-radius: 40px;
+  padding: 15px;
+  background-color: #2575fc;
+  border-radius: 8px;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #1a5bb8;
+  }
 `;
 
-const linkStyle = {
-  textDecoration: 'underline',
-  color: 'inherit',
-};
+const StyledLink = styled(Link)`
+  text-decoration: underline;
+  color: #2575fc;
+  font-weight: 500;
+  &:hover {
+    color: #1a5bb8;
+  }
+`;
 
 const Login = ({ setUser }) => {
   const navigate = useNavigate();
@@ -172,7 +143,7 @@ const Login = ({ setUser }) => {
     <Container>
       <Wrapper>
         <Title>Login</Title>
-        <SubTitle>Don't have an account?<Link to="/register" style={linkStyle}>Sign up</Link></SubTitle>
+        <SubTitle>Don't have an account? <StyledLink to="/register">Sign up</StyledLink></SubTitle>
         <Form onSubmit={loginUser}>
           <Input
             type="text"
@@ -188,7 +159,7 @@ const Login = ({ setUser }) => {
             value={user.password}
             onChange={handleInput}
           />
-          <InputButton type="submit" value="Log in" />
+          <InputButton type="submit">Log in</InputButton>
         </Form>
       </Wrapper>
     </Container>
