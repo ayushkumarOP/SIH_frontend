@@ -10,7 +10,9 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  position: absolute;
+  top:0;
+  left:0;
   overflow: hidden;
 
   &::before {
@@ -21,8 +23,8 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
     background: url(${backgroundImage}) no-repeat center center;
-    background-size: cover; /* Ensure the image covers the viewport */
-    opacity: 0.75; /* Adjust opacity for transparency effect */
+    background-size: cover; 
+    opacity: 0.75; 
     z-index: -1;
   }
 `;
