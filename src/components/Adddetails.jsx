@@ -259,7 +259,6 @@ const Adddetails = () => {
       <Wrapper>
       <Container>
         <SectionTitle>INVOICE</SectionTitle>
-        <SectionTitle>{userEmail} <br></br> {userName}</SectionTitle>
         <SectionContainer>
           <Section>
             <SectionTitle>BILLED FROM:</SectionTitle>
@@ -554,7 +553,7 @@ const Adddetails = () => {
           </div>
           <DownloadButton onClick={handleDownload}>Download Invoice</DownloadButton>
           <DownloadButton onClick={handleConfirm}>Confirm and Save Invoice</DownloadButton>
-          <DownloadButton onClick={handleViewHistory}>View Invoice History</DownloadButton>
+          {/* <DownloadButton onClick={handleViewHistory}>View Invoice History</DownloadButton> */}
         </Container>
       </Wrapper>
     </PageWrapper>
