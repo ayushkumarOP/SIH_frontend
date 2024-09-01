@@ -5,6 +5,7 @@ import Login from './pages/login';
 import Register from './pages/Register';
 import { useState, useEffect } from 'react';
 import History from './pages/History';
+import ParticularHistory from './pages/History_particular';
 
 function App() {
   const [user, setUser] = useState(false);
@@ -31,6 +32,8 @@ function App() {
           path="/history" 
           element={user ? <Navigate to="/home" /> : <History setUser={setUser} />} 
         />  
+        <Route path="/particular_history" element={<ParticularHistory />} />
+        
       </Routes>
     </Router>
   );
